@@ -53,7 +53,7 @@ public abstract class Organization {
 			}
 		}
 
-		// found nothing down this tree
+		// return found position
 		return position;
 	}
 
