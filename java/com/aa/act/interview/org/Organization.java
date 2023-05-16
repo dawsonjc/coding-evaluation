@@ -22,12 +22,10 @@ public abstract class Organization {
 	 * @return the newly filled position or empty if no position has that title
 	 */
 	public Optional<Position> hire(Name person, String title) {
-		if(!this.root.isFilled()) {
-			if(this.root.getTitle().equals(title)) {
-				Employee employee = new Employee(id++, person);
-				this.root.setEmployee(Optional.of(employee));
-				return Optional.of(root);
-			}
+		if(!this.root.isFilled() && this.root.getTitle().equals(title)) {
+			Employee employee = new Employee(id++, person);
+			this.root.setEmployee(Optional.of(employee));
+			return Optional.of(root);
 		}
 
 		// go into the tree
@@ -39,25 +37,24 @@ public abstract class Organization {
 	}
 
 	private Optional<Position> positionFinder(Collection<Position> positions, Name person, String title) {
+		Optional<Position> position = Optional.empty();
 		for(Position p : positions) {
-			if(!p.isFilled()) {
-				if(p.getTitle().equals(title)) {
-					// it wasn't filled and the title matched
-					// You're hired!
-					Employee employee = new Employee(id++, person);
-					p.setEmployee(Optional.of(employee));
-					return Optional.of(p);
-				}
+			if(!p.isFilled() && p.getTitle().equals(title)) {
+				// it wasn't filled and the title matched
+				// You're hired!
+				Employee employee = new Employee(id++, person);
+				p.setEmployee(Optional.of(employee));
+				return Optional.of(p); // found
 			}
 
 			// If the position has underlings go into them
 			if(p.getDirectReports().size() != 0) {
-				this.positionFinder(p.getDirectReports(), person, title);
+				position = this.positionFinder(p.getDirectReports(), person, title);
 			}
 		}
 
 		// found nothing down this tree
-		return Optional.empty();
+		return position;
 	}
 
 	@Override
