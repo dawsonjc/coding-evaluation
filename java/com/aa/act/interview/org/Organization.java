@@ -30,14 +30,13 @@ public abstract class Organization {
 
 		// go into the tree
 		if(this.root.getDirectReports().size() != 0) {
-			return this.positionFinder(this.root.getDirectReports(), person, title);
+			return this.positionFinder(this.root.getDirectReports(), person, title, Optional.empty());
 		}
 
 		return Optional.empty();
 	}
 
-	private Optional<Position> positionFinder(Collection<Position> positions, Name person, String title) {
-		Optional<Position> position = Optional.empty();
+	private Optional<Position> positionFinder(Collection<Position> positions, Name person, String title, Optional<Position> position) {
 		for(Position p : positions) {
 			if(!p.isFilled() && p.getTitle().equals(title)) {
 				// it wasn't filled and the title matched
@@ -49,7 +48,7 @@ public abstract class Organization {
 
 			// If the position has underlings go into them
 			if(p.getDirectReports().size() != 0) {
-				position = this.positionFinder(p.getDirectReports(), person, title);
+				position = this.positionFinder(p.getDirectReports(), person, title, position);
 			}
 		}
 
