@@ -1,6 +1,7 @@
 package com.aa.act.interview.org;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Optional;
 
 public abstract class Organization {
@@ -37,7 +38,11 @@ public abstract class Organization {
 	}
 
 	private Optional<Position> positionFinder(Collection<Position> positions, Name person, String title, Optional<Position> position) {
-		for(Position p : positions) {
+		Iterator<Position> positionIterator = positions.iterator();
+
+		while(positionIterator.hasNext() && position.isEmpty()) {
+			Position p = positionIterator.next();
+
 			if(!p.isFilled() && p.getTitle().equals(title)) {
 				// it wasn't filled and the title matched
 				// You're hired!
@@ -46,7 +51,6 @@ public abstract class Organization {
 				return Optional.of(p); // found
 			}
 
-			// If the position has underlings go into them
 			if(p.getDirectReports().size() != 0) {
 				position = this.positionFinder(p.getDirectReports(), person, title, position);
 			}
